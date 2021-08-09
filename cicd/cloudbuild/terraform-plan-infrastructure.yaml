@@ -3,6 +3,14 @@ steps:
   - id: 'Get infrastructure repo'
     name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
+
+  - id: 'Mv to dir'
+    entrypoint: 'sh'
+      args:
+        - '-c'
+        - |
+          cd tf-infra-your-app
+
   - name: gcr.io/cloud-builders/gcloud
     args: [ "builds", "submit" ]
     dir: "tf-infra-your-app"
