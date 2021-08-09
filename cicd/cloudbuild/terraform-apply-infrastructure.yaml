@@ -10,5 +10,5 @@ steps:
     args:
       - '-c'
       - |
-        cd ../terraform/environments/stage
+        cd tf-infra-your-app/terraform/environments/stage
         terraform apply -auto-approve
