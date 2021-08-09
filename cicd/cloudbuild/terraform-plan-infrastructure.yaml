@@ -19,7 +19,7 @@ steps:
       - '-c'
       - |
         ls
-        for dir in ../terraform/environments/*/
+        for dir in tf-infra-your-app/terraform/environments/*/
         do
           cd ${dir}
           env=${dir%*/}
