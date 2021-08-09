@@ -6,11 +6,6 @@ steps:
 
   - id: 'Mv to dir'
     name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        cd tf-infra-your-app
 
   - id: 'tf plan'
     name: 'hashicorp/terraform:latest'
@@ -22,6 +17,7 @@ steps:
         for dir in */
         do
           cd ${dir}
+          terraform init
           env=${dir%*/}
           env=${env#*/}
           echo ""
