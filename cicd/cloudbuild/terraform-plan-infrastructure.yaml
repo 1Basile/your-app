@@ -13,13 +13,13 @@ steps:
         cd tf-infra-your-app
 
   - id: 'tf plan'
-    name: 'hashicorp/terraform:1.0.0'
+    name: 'hashicorp/terraform:latest'
     entrypoint: 'sh'
     args:
       - '-c'
       - |
-        ls
-        for dir in tf-infra-your-app/terraform/environments/*/
+        cd tf-infra-your-app/terraform/environments/
+        for dir in */
         do
           cd ${dir}
           env=${dir%*/}
