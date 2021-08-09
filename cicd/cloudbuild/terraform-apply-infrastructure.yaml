@@ -1,0 +1,17 @@
+steps:
+
+  - id: 'Get infrastructure repo'
+    name: gcr.io/cloud-builders/git
+    args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
+  - name: gcr.io/cloud-builders/gcloud
+    args: [ "builds", "submit" ]
+    dir: "tf-infra-your-app"
+
+  - id: 'tf apply'
+    name: 'hashicorp/terraform:1.0.0'
+    entrypoint: 'sh'
+    args:
+      - '-c'
+      - |
+        cd ../terraform/environments/stage
+        terraform apply -auto-approve

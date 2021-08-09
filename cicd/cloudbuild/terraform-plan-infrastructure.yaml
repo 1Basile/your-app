@@ -1,0 +1,27 @@
+steps:
+
+  - id: 'Get infrastructure repo'
+    name: gcr.io/cloud-builders/git
+    args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
+  - name: gcr.io/cloud-builders/gcloud
+    args: [ "builds", "submit" ]
+    dir: "tf-infra-your-app"
+
+  - id: 'tf plan'
+      name: 'hashicorp/terraform:1.0.0'
+      entrypoint: 'sh'
+      args:
+        - '-c'
+        - |
+          for dir in ../terraform/environments/*/
+          do
+            cd ${dir}
+            env=${dir%*/}
+            env=${env#*/}
+            echo ""
+            echo "*************** TERRAFOM PLAN ******************"
+            echo "******* At environment: ${env} ********"
+            echo "*************************************************"
+            terraform plan || exit 1
+            cd ../../
+          done
