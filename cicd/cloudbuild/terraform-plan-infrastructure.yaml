@@ -5,6 +5,7 @@ steps:
     args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
 
   - id: 'Mv to dir'
+    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
     entrypoint: 'sh'
     args:
       - '-c'
