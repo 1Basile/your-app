@@ -11,4 +11,5 @@ steps:
       - '-c'
       - |
         cd tf-infra-your-app/terraform/environments/stage
+        terraform init
         terraform apply -auto-approve
