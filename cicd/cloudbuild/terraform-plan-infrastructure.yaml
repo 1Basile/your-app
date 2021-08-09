@@ -18,6 +18,7 @@ steps:
     args:
       - '-c'
       - |
+        ls
         for dir in ../terraform/environments/*/
         do
           cd ${dir}
