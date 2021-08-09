@@ -4,9 +4,6 @@ steps:
     name: gcr.io/cloud-builders/git
     args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
 
-  - id: 'Mv to dir'
-    name: 'gcr.io/google.com/cloudsdktool/cloud-sdk'
-
   - id: 'tf plan'
     name: 'hashicorp/terraform:latest'
     entrypoint: 'sh'
