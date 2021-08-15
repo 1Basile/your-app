@@ -52,7 +52,8 @@ steps:
 - id: 'Show Terraform Plan'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
-  args: ['cat __result_file']
+  args: 
+    - 'ls'
 
 availableSecrets:
   secretManager:
