@@ -28,26 +28,6 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-- id: 'Move to stage folder'
-  name: 'hashicorp/terraform:latest'
-  entrypoint: 'sh'
-  args:
-    - '-c'
-    - |
-      cd tf-infra-your-app/terraform/environments/stage
-
-- id: 'Terraform Format'
-  name: 'hashicorp/terraform:latest'
-  run: terraform fmt -check
-
-- id: 'Terraform Init'
-  name: 'hashicorp/terraform:latest'
-  run: terraform init -reconfigure
-
-- id: 'Terraform Validate'
-  name: 'hashicorp/terraform:latest'
-  run: terraform validate -no-color
-
 - id: 'Terraform Plan'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
