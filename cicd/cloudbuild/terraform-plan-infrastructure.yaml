@@ -1,26 +1,61 @@
 steps:
 
-  - id: 'Get infrastructure repo'
-    name: gcr.io/cloud-builders/git
-    args: [ 'clone', 'https://github.com/1Basile/tf-infra-your-app' ]
+- id: 'Access the id_github file from Secret Manager, and setup SSH'
+  name: gcr.io/cloud-builders/git
+  secretEnv: ['_SSH_KEY']
+  entrypoint: 'sh'
+  args:
+  - -c
+  - |
+    echo "$$_SSH_KEY" >> /root/.ssh/id_rsa
+    chmod 600 /root/.ssh/id_rsa
+    cat <<EOF >/root/.ssh/config
+    Hostname github.com
+    IdentityFile /root/.ssh/id_rsa
+    EOF
+    ssh-keyscan -t rsa github.com > /root/.ssh/known_hosts
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
 
-  - id: 'tf plan'
-    name: 'hashicorp/terraform:latest'
-    entrypoint: 'sh'
-    args:
-      - '-c'
-      - |
-        cd tf-infra-your-app/terraform/environments/
-        for dir in */
-        do
-          cd ${dir}
-          terraform init
-          env=${dir%*/}
-          env=${env#*/}
-          echo ""
-          echo "*************** TERRAFOM PLAN ******************"
-          echo "******* At environment: ${env} ********"
-          echo "*************************************************"
-          terraform plan || exit 1
-          cd ../
-        done
+- id: 'Get infrastructure repo'
+  name: gcr.io/cloud-builders/git
+  args:
+  - clone
+  - --recurse-submodules
+  - git@github.com:${_GIT_USERNAME}/${_GIT_REPOSITORY}
+  volumes:
+  - name: 'ssh'
+    path: /root/.ssh
+
+- id: 'tf plan'
+  name: 'hashicorp/terraform:latest'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      cd tf-infra-your-app/terraform/environments/
+      for dir in */
+      do
+        cd ${dir}
+        terraform init
+        env=${dir%*/}
+        env=${env#*/}
+        echo ""
+        echo "*************** TERRAFOM PLAN ******************"
+        echo "******* At environment: ${env} ********"
+        echo "*************************************************"
+        terraform plan || exit 1
+        cd ../
+      done
+
+availableSecrets:
+  secretManager:
+  - versionName: projects/${_PROJECT_ID}/secrets/${_SECRET_GIT_KEY_NAME}/versions/latest
+    env: '_SSH_KEY'
+
+substitutions:
+  _GIT_USERNAME: 1Basile
+  _GIT_REPOSITORY: tf-infra-your-app
+  _PROJECT_ID: cio-your-project-np
+  _SECRET_GIT_KEY_NAME: secret-name
