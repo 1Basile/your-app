@@ -28,7 +28,7 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-- id: 'Terraform Plan'
+- id: 'Terraform Plan Exec'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
   args:
@@ -48,7 +48,11 @@ steps:
         echo "" > __result_file
         cd ../
       done
-      cat __result_file
+
+- id: 'Show Terraform Plan'
+  name: 'hashicorp/terraform:latest'
+  entrypoint: 'sh'
+  args: ['cat __result_file']
 
 availableSecrets:
   secretManager:
