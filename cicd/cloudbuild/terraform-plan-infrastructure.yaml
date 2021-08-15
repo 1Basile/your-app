@@ -41,11 +41,11 @@ steps:
         terraform init -reconfigure
         env=${dir%*/}
         env=${env#*/}
-        echo "*************** TERRAFOM PLAN ******************" > __result_file
-        echo "******* At environment: ${env} ********" > __result_file
-        echo "*************************************************" > __result_file
-        terraform plan -out __result_file || exit 1
-        echo "" > __result_file
+        echo "*************** TERRAFOM PLAN ******************" > ../__result_file
+        echo "******* At environment: ${env} ********" > ../__result_file
+        echo "*************************************************" > ../__result_file
+        terraform plan -out ../__result_file || exit 1
+        echo "" > ../__result_file
         cd ../
       done
 
