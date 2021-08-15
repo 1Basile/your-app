@@ -1,6 +1,6 @@
 steps:
 
-- id: 'Access the id_github file from Secret Manager, and setup SSH'
+- id: 'Setup SSH connectin to github'
   name: gcr.io/cloud-builders/git
   secretEnv: ['_SSH_KEY']
   entrypoint: 'sh'
@@ -28,7 +28,27 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-- id: 'tf plan'
+- id: 'Move to stage folder'
+  name: 'hashicorp/terraform:latest'
+  entrypoint: 'sh'
+  args:
+    - '-c'
+    - |
+      cd tf-infra-your-app/terraform/environments/stage
+
+- id: 'Terraform Format'
+  name: 'hashicorp/terraform:latest'
+  run: terraform fmt -check
+
+- id: 'Terraform Init'
+  name: 'hashicorp/terraform:latest'
+  run: terraform init -reconfigure
+
+- id: 'Terraform Validate'
+  name: 'hashicorp/terraform:latest'
+  run: terraform validate -no-color
+
+- id: 'Terraform Plan'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
   args:
@@ -38,14 +58,14 @@ steps:
       for dir in */
       do
         cd ${dir}
-        terraform init
+        terraform init -reconfigure
         env=${dir%*/}
         env=${env#*/}
-        echo ""
-        echo "*************** TERRAFOM PLAN ******************"
-        echo "******* At environment: ${env} ********"
-        echo "*************************************************"
-        terraform plan || exit 1
+        echo "*************** TERRAFOM PLAN ******************" > __result_file
+        echo "******* At environment: ${env} ********" > __result_file
+        echo "*************************************************" > __result_file
+        terraform plan || exit 1 > __result_file
+        echo "" > __result_file
         cd ../
       done
 
@@ -59,3 +79,4 @@ substitutions:
   _GIT_REPOSITORY: tf-infra-your-app
   _PROJECT_ID: cio-your-project-np
   _SECRET_GIT_KEY_NAME: secret-name
+
