@@ -48,6 +48,7 @@ steps:
         echo "" > __result_file
         cd ../
       done
+      cat __result_file
 
 availableSecrets:
   secretManager:
