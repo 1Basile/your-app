@@ -52,7 +52,9 @@ steps:
 - id: 'Show Terraform Plan'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
-  args: 
+  args:
+    - '-c'
+    - |
     - 'ls'
 
 availableSecrets:
