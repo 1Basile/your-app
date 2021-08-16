@@ -55,7 +55,8 @@ steps:
   args:
     - '-c'
     - |
-    - 'ls'
+    - 'echo `ls`'
+    - cat __result_file
 
 availableSecrets:
   secretManager:
