@@ -48,6 +48,7 @@ steps:
         echo ""
         cd ../
       done
+      
 availableSecrets:
   secretManager:
   - versionName: projects/${_PROJECT_ID}/secrets/${_SECRET_GIT_KEY_NAME}/versions/latest
