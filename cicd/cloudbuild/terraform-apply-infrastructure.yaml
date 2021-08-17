@@ -1,7 +1,5 @@
 steps:
 
- steps:
-
 - id: 'Setup SSH connectin to github'
   name: gcr.io/cloud-builders/git
   secretEnv: ['_SSH_KEY']
@@ -36,15 +34,16 @@ steps:
   args:
       - '-c'
       - |
-        cd tf-infra-your-app/terraform/environments/stage
-        terraform init
-        terraform apply -auto-approve
-
-- id: 'Show Terraform Apply'
-  name: 'hashicorp/terraform:latest'
-  entrypoint: 'sh'
-  args: 
-    - 'ls'
+        cd tf-infra-your-app/terraform/environments/
+        for dir in */
+        do
+          cd ${dir}
+          env=${dir%*/}
+          env=${env#*/}
+          terraform init -reconfigure || exit 1
+          terraform apply -auto-approve || exit 1
+          cd ../
+        done
 
 availableSecrets:
   secretManager:
