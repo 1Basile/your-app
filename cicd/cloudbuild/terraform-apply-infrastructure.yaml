@@ -40,8 +40,12 @@ steps:
           cd ${dir}
           env=${dir%*/}
           env=${env#*/}
+          echo "*************** TERRAFOM PLAN ******************"
+          echo "******* At environment: ${env} ********"
+          echo "*************************************************"
           terraform init -reconfigure || exit 1
           terraform apply -auto-approve || exit 1
+          echo ""
           cd ../
         done
 
