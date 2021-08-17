@@ -28,7 +28,7 @@ steps:
   - name: 'ssh'
     path: /root/.ssh
 
-- id: 'Terraform Plan Exec'
+- id: 'Terraform Plan'
   name: 'hashicorp/terraform:latest'
   entrypoint: 'sh'
   args:
@@ -41,23 +41,13 @@ steps:
         terraform init -reconfigure
         env=${dir%*/}
         env=${env#*/}
-        echo "*************** TERRAFOM PLAN ******************" > ../__result_file
-        echo "******* At environment: ${env} ********" > ../__result_file
-        echo "*************************************************" > ../__result_file
-        terraform plan -out ../__result_file || exit 1
-        echo "" > ../__result_file
+        echo "*************** TERRAFOM PLAN ******************"
+        echo "******* At environment: ${env} ********"
+        echo "*************************************************"
+        terraform plan || exit 1
+        echo ""
         cd ../
       done
-
-- id: 'Show Terraform Plan'
-  name: 'hashicorp/terraform:latest'
-  entrypoint: 'sh'
-  args:
-    - '-c'
-    - |
-    - 'echo `ls`'
-    - cat __result_file
-
 availableSecrets:
   secretManager:
   - versionName: projects/${_PROJECT_ID}/secrets/${_SECRET_GIT_KEY_NAME}/versions/latest
